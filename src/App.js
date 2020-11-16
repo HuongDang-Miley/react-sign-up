@@ -1,18 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import "./App.css"
 
-function App() {
- 
-  return (
-    <div style={{margin: 100, textAlign: "center"}}>
-<input></input><br/>
-<input></input><br/>
-<button>submit</button>
-
-  
-      
-    </div>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      <div>
+        <input></input><br/>
+        <input></input><br/>
+        <button>Sign Up</button>
+      </div>
+    )
+  }
 }
-
-export default App;
