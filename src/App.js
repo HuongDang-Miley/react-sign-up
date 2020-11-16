@@ -7,22 +7,25 @@ export default class App extends Component {
   state = {
     email: "",
     password: "",
-    isEmail: true,
+    isEmailError: false,
     inValidEmailMessage: '',
-    isPassword: true,
+    isPasswordError: false,
     inValidPassWordMessage: '',
+    submitError: false,
+    submitErrorMessage: ""
   }
 
   handleEmailInput = (event) => {
     this.setState({
+    // Connect input value and name to state
       [event.target.name]: event.target.value,
     }, () => {
       // check if email is valid
       if (event.target.value.includes("@")) {
-        this.setState({ isEmail: true })
+        this.setState({ isEmailError: false })
       } else {
         this.setState({
-          isEmail: false,
+          isEmailError: true,
           inValidEmailMessage: 'Please type correct email format'
         })
       }
@@ -34,34 +37,87 @@ export default class App extends Component {
       [event.target.name]: event.target.value,
     }, () => {
       // check if password is valid
-      let { isPassword, password, } = this.state
-      isPassword = validator.matches(password, "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
+      let { password } = this.state
+      let isPassword = validator.matches(password, "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
       if (isPassword) {
         this.setState({
-          isPassword: true,
+          isPasswordError: false,
         })
       } else {
         this.setState({
-          isPassword: false,
+          isPasswordError: true,
           inValidPassWordMessage: "Password must include a symbol, a number, an uppercase, and a lowercase"
         })
-
       }
     })
+  }
+
+  handleOnSubmit = (event) => {
+    event.preventDefault()
+    let { email, password } = this.state
+    if (validator.isEmpty(email) && validator.isEmpty(password)) {
+      this.setState({
+        submitError: true,
+        submitErrorMessage: "Must fill Email and Password"
+      })
+      return;
+    } else {
+      this.setState({
+        submitError: false,
+        submitErrorMessage: ""
+      })
+    }
+
+    if (validator.isEmpty(email)) {
+      this.setState({
+        submitError: true,
+        submitErrorMessage: "Must fill Email"
+      })
+      return;
+    } else {
+      this.setState({
+        email: "",
+        password: "",
+        submitError: false,
+        submitErrorMessage: ""
+      })
+    }
+
+    if (validator.isEmpty(password)) {
+      this.setState({
+        email: "",
+        password: "",
+        submitError: true,
+        submitErrorMessage: "Must fill Password"
+      })
+    } else {
+      this.setState({
+        email: "",
+        password: "",
+        submitError: false,
+        submitErrorMessage: ""
+      })
+    }
+
+    console.log(this.state.email)
+    console.log(this.state.password)
   }
 
   render() {
     const {
       email,
       password,
-      isEmail,
+      isEmailError,
       inValidEmailMessage,
-      isPassword,
+      isPasswordError,
       inValidPassWordMessage,
+      submitError,
+      submitErrorMessage
     } = this.state
     return (
-      <form>
-        {isEmail ? "" : <p className="error-message">{inValidEmailMessage}</p>}
+      <form onSubmit={this.handleOnSubmit}>
+        {submitError ? <p className="error-message">{submitErrorMessage}</p> : ""}
+        {isEmailError ? <p className="error-message">{inValidEmailMessage}</p> : ""}
         <input
           type="text"
           name="email"
@@ -69,7 +125,7 @@ export default class App extends Component {
           onChange={this.handleEmailInput}
         ></input><br />
 
-        {isPassword ? "" : <p className="error-message">{inValidPassWordMessage}</p>}
+        {isPasswordError ? <p className="error-message">{inValidPassWordMessage}</p> : ""}
         <input
           type="text"
           name="password"
