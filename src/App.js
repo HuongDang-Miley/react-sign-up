@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import "./App.css"
 import validator from "validator"
+import Message from "./components/shared/Message"
 
 
 export default class App extends Component {
@@ -17,7 +18,7 @@ export default class App extends Component {
 
   handleEmailInput = (event) => {
     this.setState({
-    // Connect input value and name to state
+      // Connect input value and name to state
       [event.target.name]: event.target.value,
     }, () => {
       // check if email is valid
@@ -116,8 +117,15 @@ export default class App extends Component {
     } = this.state
     return (
       <form onSubmit={this.handleOnSubmit}>
-        {submitError ? <p className="error-message">{submitErrorMessage}</p> : ""}
-        {isEmailError ? <p className="error-message">{inValidEmailMessage}</p> : ""}
+        {submitError
+          ? (<Message className={"error-message"} message={submitErrorMessage} />)
+          : ""
+        }
+         
+        {isEmailError
+        ? (<Message className={"error-message"} message={inValidEmailMessage}/>)
+        : ""
+         }
         <input
           type="text"
           name="email"
@@ -125,7 +133,10 @@ export default class App extends Component {
           onChange={this.handleEmailInput}
         ></input><br />
 
-        {isPasswordError ? <p className="error-message">{inValidPassWordMessage}</p> : ""}
+        {isPasswordError
+        ? (<Message className={"error-message"} message={inValidPassWordMessage}/>)
+        : ""
+         }
         <input
           type="text"
           name="password"
